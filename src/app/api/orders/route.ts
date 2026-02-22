@@ -1,12 +1,14 @@
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 import { type NextRequest, NextResponse } from "next/server"
-import { container } from "@/infrastructure/utils/container"
-import type { AppApiService } from "@/infrastructure/services/api"
+import { container } from "../../../infrastructure/utils/container"
+import type { AppApiService } from "../../../infrastructure/services/api"
+import { connectDB } from "../../../infrastructure/utils/db"
 
 container.resolve("mongo")
 
 export async function GET() {
+  await connectDB()
   try {
     const apiService = container.resolve<AppApiService>("apiService")
     const orders = await apiService.getOrders()

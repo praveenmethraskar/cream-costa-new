@@ -24,7 +24,7 @@ export const loadContainer = () => {
     config: asClass(AppConfig).singleton(),
     mongo: asClass(MongoManager).singleton(),
     apiService: asClass(AppApiService).scoped(),
-    logger: asClass(AppLogger).scoped(),
+    logger: asClass(AppLogger).singleton(),
     cryptoService: asClass(AppCryptoService).scoped(),
     // repositories
     userRepository: asClass(AppUserRepository).scoped(),
