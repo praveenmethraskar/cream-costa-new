@@ -332,9 +332,9 @@ export default function ProductionManagement() {
                       Assigned Stock: {item.assignedStock}
                     </p>
 
-                    {item.needsProduction > 0 ? (
+                    {(item.needsProduction ?? 0) > 0 ? (
                       <p className="text-xs text-amber-600">
-                        Needs Production: {item.needsProduction}
+                        Needs Production: {item.needsProduction ?? 0}
                       </p>
                     ) : (
                       <p className="text-xs text-green-600">
