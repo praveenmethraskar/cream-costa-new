@@ -1,5 +1,6 @@
 
-export const dynamic = 'force-dynamic'
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
 import { NextRequest, NextResponse } from "next/server"
 import { container } from "@/infrastructure/utils/container"
 import type { AppApiService } from "@/infrastructure/services/api"
