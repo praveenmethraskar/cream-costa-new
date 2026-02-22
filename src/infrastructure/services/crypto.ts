@@ -18,29 +18,39 @@ export interface CryptoService {
 }
 
 export class AppCryptoService implements CryptoService {
-  constructor(private envService: EnvService) {}
+  constructor(private envService: EnvService) {
+    if (!this.envService.jwtSecret) {
+      throw new Error("JWT_SECRET is not defined in environment variables")
+    }
+  }
 
   generateToken(user: User): string {
+    if (!user._id) {
+      throw new Error("User ID missing while generating token")
+    }
 
-    console.log("[v0] Generating token for user", user)
-    let expiresIn: string
+    let expiresInHours: number
 
     switch (user.role) {
       case Role.OWNER:
-        expiresIn = this.envService.jwtExpSuperAdmin
+        expiresInHours = Number(this.envService.jwtExpSuperAdmin)
         break
       case Role.MANAGER:
-        expiresIn = this.envService.jwtExpAdmin
+        expiresInHours = Number(this.envService.jwtExpAdmin)
         break
       case Role.USER:
-        expiresIn = this.envService.jwtExpUser
+        expiresInHours = Number(this.envService.jwtExpUser)
         break
       default:
         throw new Error("Invalid role")
     }
 
+    if (isNaN(expiresInHours)) {
+      throw new Error("Invalid JWT expiration configuration")
+    }
+
     const payload: TokenPayload = {
-      id: user._id!.toString(),
+      id: user._id.toString(),
       firstname: user.firstname,
       lastname: user.lastname,
       phone: user.phone,
@@ -48,21 +58,17 @@ export class AppCryptoService implements CryptoService {
       role: user.role,
     }
 
-    const secretKey: string = this.envService.jwtSecret
-
     const options: SignOptions = {
-      expiresIn: `${Number.parseInt(expiresIn, 10)}h`,
+      expiresIn: `${expiresInHours}h`,
       algorithm: "HS256",
     }
 
-    return jwt.sign(payload, secretKey, options)
+    return jwt.sign(payload, this.envService.jwtSecret, options)
   }
 
   verifyToken(token: string): TokenPayload {
     try {
-      const secretKey: string = this.envService.jwtSecret
-      const decoded = jwt.verify(token, secretKey) as TokenPayload
-      return decoded
+      return jwt.verify(token, this.envService.jwtSecret) as TokenPayload
     } catch (error) {
       throw new Error("Invalid or expired token")
     }
