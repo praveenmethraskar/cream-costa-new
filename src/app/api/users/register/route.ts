@@ -1,4 +1,5 @@
 // src/app/api/register/route.ts
+export const dynamic = "force-dynamic"
 import { NextResponse } from "next/server"
 import { container } from "@/infrastructure/utils/container"
 import { AppApiService } from "@/infrastructure/services/api"

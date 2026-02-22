@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"
 import { type NextRequest, NextResponse } from "next/server"
 import { container } from "@/infrastructure/utils/container"
 import type { AppCryptoService } from "@/infrastructure/services/crypto"
