@@ -1,14 +1,10 @@
-export const runtime = "nodejs"
-export const dynamic = "force-dynamic"
 import { type NextRequest, NextResponse } from "next/server"
-import { container } from "../../../../infrastructure/utils/container"
-import type { AppCryptoService } from "../../../../infrastructure/services/crypto"
-import { connectDB } from "../../../../infrastructure/utils/db"
+import { container } from "@/infrastructure/utils/container"
+import type { AppCryptoService } from "@/infrastructure/services/crypto"
 
 container.resolve("mongo")
 
 export async function GET(request: NextRequest) {
-  await connectDB()
   try {
     console.log("[v0] /api/users/me route called")
     const token = request.cookies.get("token")?.value

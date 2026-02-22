@@ -1,15 +1,12 @@
 // src/app/api/products/route.ts
-export const runtime = "nodejs"
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from "next/server"
-import { container } from "../../../infrastructure/utils/container"
-import { AppApiService } from "../../../infrastructure/services/api"
-import { connectDB } from "../../../infrastructure/utils/db"
+import { container } from "@/infrastructure/utils/container"
+import { AppApiService } from "@/infrastructure/services/api"
 
 container.resolve("mongo")  // Ensure DB connection
 
 export async function GET() {
-  await connectDB()
   try {
     const apiService = container.resolve<AppApiService>("apiService")
 
