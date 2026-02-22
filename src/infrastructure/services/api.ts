@@ -34,7 +34,7 @@ export class AppApiService implements ApiService {
     private userRepository: UserRepository,
     private productRepository: ProductRepository,
     private orderRepository: OrderRepository
-  ) {}
+  ) { }
 
   async login(username: string, password: string): Promise<User> {
     const user = await this.userRepository.findUserByUsername(username)
@@ -52,24 +52,24 @@ export class AppApiService implements ApiService {
   }
 
   async createOrder(order: CreateOrderRequest): Promise<object> {
-    
+
     // const session = await mongoose.startSession()
     // session.startTransaction()
-  
+
     if (!order.customerName) {
-      throw new Error ("Customer name is missing.")
+      throw new Error("Customer name is missing.")
     }
 
     if (!order.customerPhone) {
-      throw new Error ("Customer phone is missing.")
+      throw new Error("Customer phone is missing.")
     }
 
     if (!order.orderId) {
-      throw new Error ("Order ID is missing.")
+      throw new Error("Order ID is missing.")
     }
 
     try {
-      
+
       const createdOrder = await this.orderRepository.createOrder(order)
 
       const products = await this.productRepository.getAllProducts()
@@ -98,7 +98,7 @@ export class AppApiService implements ApiService {
   }
 
   async createProduct(product: CreateProductRequest): Promise<Product | null> {
-    
+
     // Validate required fields
     const missingFields = []
     if (!product.code) missingFields.push("code")
@@ -132,7 +132,7 @@ export class AppApiService implements ApiService {
       throw new Error("Product code is required")
     }
 
-     if (!productionData.name) {
+    if (!productionData.name) {
       throw new Error("Product name is required")
     }
 
@@ -152,7 +152,7 @@ export class AppApiService implements ApiService {
     if (!plannedProductionQty && !productionStatus) {
       throw new Error("At least one of plannedProductionQty or productionStatus must be provided")
     }
-    
+
     const production = await this.productRepository.updateProduction(_id, productionStatus, plannedProductionQty)
 
     if (production?.productionStatus === ProductionStatus.COMPLETED) {
@@ -204,7 +204,7 @@ export class AppApiService implements ApiService {
   }
 
   private async allocationAndDeduction(order: Order, products: Product[]): Promise<OrderItem[]> {
-    
+
     const updatedItems: OrderItem[] = []
 
     for (const item of order.items) {
@@ -244,7 +244,7 @@ export class AppApiService implements ApiService {
           )
         }
 
-      } 
+      }
       // Case 2: Partial stock available
       else if (availableStock < requiredQty) {
 
@@ -302,13 +302,17 @@ export class AppApiService implements ApiService {
 
       for (const item of order.items) {
 
-        if (item.productId !== productCode || item.needsProduction <= 0) continue
+        const needsProduction = item.needsProduction ?? 0
+
+        if (item.productId !== productCode || needsProduction <= 0) continue
         if (product.stock <= 0) break
 
-        const allocatableQty = Math.min(product.stock, item.needsProduction)
+        const allocatableQty = Math.min(product.stock, needsProduction)
 
-        item.assignedStock += allocatableQty
-        item.needsProduction -= allocatableQty
+        const currentAssignedStock = item.assignedStock ?? 0
+
+        item.assignedStock = currentAssignedStock + allocatableQty
+        item.needsProduction = needsProduction - allocatableQty
         item.individualStockDeducted = true
 
         product.stock -= allocatableQty
