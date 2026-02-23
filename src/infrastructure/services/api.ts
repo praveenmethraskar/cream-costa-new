@@ -29,12 +29,27 @@ export interface ApiService {
 }
 
 export class AppApiService implements ApiService {
-  constructor(
-    private logger: Logger,
-    private userRepository: UserRepository,
-    private productRepository: ProductRepository,
-    private orderRepository: OrderRepository
-  ) { }
+  private logger: Logger
+  private userRepository: UserRepository
+  private productRepository: ProductRepository
+  private orderRepository: OrderRepository
+
+  constructor({
+    logger,
+    userRepository,
+    productRepository,
+    orderRepository,
+  }: {
+    logger: Logger
+    userRepository: UserRepository
+    productRepository: ProductRepository
+    orderRepository: OrderRepository
+  }) {
+    this.logger = logger
+    this.userRepository = userRepository
+    this.productRepository = productRepository
+    this.orderRepository = orderRepository
+  }
 
   async login(username: string, password: string): Promise<User> {
     const user = await this.userRepository.findUserByUsername(username)

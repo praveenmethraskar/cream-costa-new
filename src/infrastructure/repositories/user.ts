@@ -7,10 +7,12 @@ export interface UserRepository {
 }
 
 export class AppUserRepository implements UserRepository {
-  
-  constructor(
-    private logger: Logger
-  ) {}
+
+  private logger: Logger
+
+  constructor({ logger }: { logger: Logger }) {
+    this.logger = logger
+  }
 
   async createUser(user: User): Promise<User> {
     try {
@@ -23,7 +25,7 @@ export class AppUserRepository implements UserRepository {
         password: user.password,
         role: user.role,
       })
-      
+
       return await newUser.save()
     } catch (error) {
       this.logger.error(`Error creating new user: ${error}`)

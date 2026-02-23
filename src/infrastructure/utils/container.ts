@@ -17,7 +17,7 @@ export const loadContainer = () => {
   if (globalContainer) return globalContainer
 
   const container = createContainer({
-    injectionMode: InjectionMode.CLASSIC, // ✅ IMPORTANT
+    injectionMode: InjectionMode.PROXY, // ✅ IMPORTANT
   })
 
   container.register({
