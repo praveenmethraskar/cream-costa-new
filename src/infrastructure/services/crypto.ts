@@ -1,4 +1,5 @@
 import jwt, { type SignOptions } from "jsonwebtoken"
+import type { StringValue } from "ms"
 import type { EnvService } from "./env"
 import type { User } from "../schemas/user"
 import { Role } from "../models/enums/role"
@@ -19,6 +20,7 @@ export interface CryptoService {
 
 export class AppCryptoService implements CryptoService {
   private envService: EnvService
+
   constructor({ envService }: { envService: EnvService }) {
     this.envService = envService
 
@@ -32,24 +34,21 @@ export class AppCryptoService implements CryptoService {
       throw new Error("User ID missing while generating token")
     }
 
-    let expiresInHours: number
+    // Select expiration based on role
+    let expiresIn: StringValue
 
     switch (user.role) {
       case Role.OWNER:
-        expiresInHours = Number(this.envService.jwtExpSuperAdmin)
+        expiresIn = (this.envService.jwtExpSuperAdmin || "12h") as StringValue
         break
       case Role.MANAGER:
-        expiresInHours = Number(this.envService.jwtExpAdmin)
+        expiresIn = (this.envService.jwtExpManager || "6h") as StringValue
         break
       case Role.USER:
-        expiresInHours = Number(this.envService.jwtExpUser)
+        expiresIn = (this.envService.jwtExpUser || "1h") as StringValue
         break
       default:
         throw new Error("Invalid role")
-    }
-
-    if (isNaN(expiresInHours)) {
-      throw new Error("Invalid JWT expiration configuration")
     }
 
     const payload: TokenPayload = {
@@ -62,7 +61,7 @@ export class AppCryptoService implements CryptoService {
     }
 
     const options: SignOptions = {
-      expiresIn: `${expiresInHours}h`,
+      expiresIn,
       algorithm: "HS256",
     }
 
@@ -71,8 +70,11 @@ export class AppCryptoService implements CryptoService {
 
   verifyToken(token: string): TokenPayload {
     try {
-      return jwt.verify(token, this.envService.jwtSecret) as TokenPayload
-    } catch (error) {
+      return jwt.verify(
+        token,
+        this.envService.jwtSecret
+      ) as TokenPayload
+    } catch {
       throw new Error("Invalid or expired token")
     }
   }

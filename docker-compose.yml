@@ -12,6 +12,9 @@ services:
       - MONGO_URI=mongodb://mongo:27017
       - DATABASE_NAME=ice-cream
       - JWT_SECRET=2rD@qF1vX8h!pR9mK6yZ$wT5aL^bJ3s
+      - JWT_EXPIRES_USER=1h
+      - JWT_EXPIRES_MANAGER=6h
+      - JWT_EXPIRES_SUPER_ADMIN=12h
     depends_on:
       - mongo
 
