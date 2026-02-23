@@ -18,7 +18,10 @@ export interface CryptoService {
 }
 
 export class AppCryptoService implements CryptoService {
-  constructor(private envService: EnvService) {
+  private envService: EnvService
+  constructor({ envService }: { envService: EnvService }) {
+    this.envService = envService
+
     if (!this.envService.jwtSecret) {
       throw new Error("JWT_SECRET is not defined in environment variables")
     }
