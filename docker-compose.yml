@@ -1,32 +1,6 @@
 version: "3.8"
 
 services:
-
-  # ── MongoDB ──────────────────────────────────────────────────────────────────
-  mongo:
-    image: mongo:6
-    container_name: icecream-mongo
-    restart: always
-    environment:
-      # Added auth - keeps your EC2 instance secure
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - "27017:27017"
-    networks:
-      - icecream_network
-    # Added healthcheck - app won't start until MongoDB is truly ready
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
-
-  # ── Next.js App (Frontend + API Routes) ──────────────────────────────────────
   app:
     build: .
     container_name: icecream-app
@@ -34,37 +8,19 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: production
-
-      # Full MongoDB URI with auth credentials from .env
-      MONGODB_URI: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DB_NAME}?authSource=admin
-
-      # Auth secrets (used by crypto.ts / api.ts in your services folder)
-      JWT_SECRET: ${JWT_SECRET}
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
-
-      # Public URL (used by presentation layer / components)
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
-
+      - MONGODB_URI=mongodb://mongo:27017/icecream
+      - NODE_ENV=production
     depends_on:
-      mongo:
-        # Waits for mongo healthcheck to pass before starting app
-        condition: service_healthy
-    networks:
-      - icecream_network
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      - mongo
 
-# ── Volumes ───────────────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:6
+    container_name: icecream-mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
 volumes:
   mongo_data:
-
-# ── Networks ──────────────────────────────────────────────────────────────────
-networks:
-  icecream_network:
-    driver: bridge
