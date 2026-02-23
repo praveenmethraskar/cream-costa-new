@@ -4,10 +4,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { container } from "@/infrastructure/utils/container"
 import { AppApiService } from "@/infrastructure/services/api"
 
-container.resolve("mongo")  // Ensure DB connection
+
 
 export async function GET() {
   try {
+    container.resolve("mongo")  // Ensure DB connection
     const apiService = container.resolve<AppApiService>("apiService")
 
     const products = await apiService.getProducts()
@@ -23,6 +24,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    container.resolve("mongo")  // Ensure DB connection
 
     const body = await req.json()
     const apiService = container.resolve<AppApiService>("apiService")

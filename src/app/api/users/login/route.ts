@@ -39,10 +39,11 @@ import { container } from "@/infrastructure/utils/container"
 import type { AppApiService } from "@/infrastructure/services/api"
 import type { AppCryptoService } from "@/infrastructure/services/crypto"
 
-container.resolve("mongo")
+
 
 export async function POST(req: Request) {
   try {
+    container.resolve("mongo")
     console.log("[v0] Login route called")
     const { username, password } = await req.json()
     console.log("[v0] Login attempt for username:", username)

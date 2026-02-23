@@ -6,10 +6,11 @@ import { container } from "@/infrastructure/utils/container"
 import { AppApiService } from "@/infrastructure/services/api"
 import { RegisterBody } from "@/infrastructure/models/user/RegisterBody"
 
-container.resolve("mongo")  // Ensure database is connected
+
 
 export async function POST(req: Request) {
   try {
+    container.resolve("mongo")  // Ensure database is connected
     const body: RegisterBody = await req.json()
 
     // Basic validation

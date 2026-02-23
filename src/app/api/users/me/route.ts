@@ -2,10 +2,11 @@ import { type NextRequest, NextResponse } from "next/server"
 import { container } from "@/infrastructure/utils/container"
 import type { AppCryptoService } from "@/infrastructure/services/crypto"
 
-container.resolve("mongo")
+
 
 export async function GET(request: NextRequest) {
   try {
+    container.resolve("mongo")
     console.log("[v0] /api/users/me route called")
     const token = request.cookies.get("token")?.value
 
