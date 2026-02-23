@@ -1,4 +1,5 @@
 // src/infrastructure/utils/container.ts
+
 import { createContainer, asClass, InjectionMode, AwilixContainer } from "awilix"
 import { AppApiService } from "../services/api"
 import { AppUserRepository } from "../repositories/user"
@@ -9,13 +10,14 @@ import { MongoManager } from "./mongo"
 import { AppEnvService } from "../services/env"
 import { AppOrderRepository } from "../repositories/order"
 import { AppCryptoService } from "../services/crypto"
+
 let globalContainer: AwilixContainer | null = null
 
 export const loadContainer = () => {
   if (globalContainer) return globalContainer
 
   const container = createContainer({
-    injectionMode: InjectionMode.PROXY,
+    injectionMode: InjectionMode.CLASSIC, // ✅ IMPORTANT
   })
 
   container.register({
@@ -26,6 +28,7 @@ export const loadContainer = () => {
     apiService: asClass(AppApiService).scoped(),
     logger: asClass(AppLogger).singleton(),
     cryptoService: asClass(AppCryptoService).scoped(),
+
     // repositories
     userRepository: asClass(AppUserRepository).scoped(),
     productRepository: asClass(AppProductRepository).scoped(),
