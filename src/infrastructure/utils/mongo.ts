@@ -2,13 +2,19 @@ import mongoose from "mongoose"
 import { Config } from "./config"
 import { Logger } from "../services/logger"
 
-let mongoManagerInstance: MongoManager | null = null
-
 export class MongoManager {
-  constructor(
-    private readonly config: Config,
-    private readonly logger: Logger
-  ) {
+  private config: Config
+  private logger: Logger
+
+  constructor({
+    config,
+    logger,
+  }: {
+    config: Config
+    logger: Logger
+  }) {
+    this.config = config
+    this.logger = logger
     this.connect()
 
     if (typeof process !== "undefined" && process.on) {

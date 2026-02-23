@@ -74,31 +74,37 @@ export interface Config {
 }
 
 export class AppConfig implements Config {
-    constructor(private envService: EnvService) { }
+    private envService: EnvService
 
-    public get connectionUri(): string {
+    constructor({ envService }: { envService: EnvService }) {
+        this.envService = envService
+    }
+
+    get connectionUri(): string {
         return this.envService.databaseUrl
     }
 
-    public get db(): string {
+    get db(): string {
         return this.envService.databaseName
     }
 
-    public get port(): number {
+    get port(): number {
         return this.envService.port
     }
 
-    public get isTesting(): boolean {
+    get isTesting(): boolean {
         return this.envService.nodeEnv === "testing"
     }
 
-    public get isProd(): boolean {
+    get isProd(): boolean {
         return this.envService.nodeEnv === "production"
     }
 
-    public get isStaging(): boolean {
+    get isStaging(): boolean {
         return this.envService.nodeEnv === "staging"
     }
 
-    public get supportedLocales(): Array<string> { return ["en-IN", "en-AU", "en-US"] }
+    get supportedLocales(): Array<string> {
+        return ["en-IN", "en-AU", "en-US"]
+    }
 }
