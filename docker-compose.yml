@@ -8,8 +8,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGODB_URI=mongodb://mongo:27017/icecream
       - NODE_ENV=production
+      - MONGO_URI=mongodb://mongo:27017
+      - DATABASE_NAME=ice-cream
+      - JWT_SECRET=2rD@qF1vX8h!pR9mK6yZ$wT5aL^bJ3s
     depends_on:
       - mongo
 
