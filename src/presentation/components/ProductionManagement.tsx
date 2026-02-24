@@ -116,10 +116,10 @@ export default function ProductionManagement() {
 
   async function handleCreateOrder() {
     // Generate UUID for orderId
-    //const orderId = crypto.randomUUID()
+    const orderId = crypto.randomUUID()
     
     const orderData = {
-      //orderId,
+      orderId,
       customerName,
       customerPhone,
       items: orderItems,
