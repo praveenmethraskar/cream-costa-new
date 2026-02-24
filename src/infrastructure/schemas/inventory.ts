@@ -21,6 +21,7 @@ export interface Product extends Document {
 }
 
 const productSchema = new Schema(
+  models.Product || model("Product", productSchema)
   {
     code: {
       type: String,
