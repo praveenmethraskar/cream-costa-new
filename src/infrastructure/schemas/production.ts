@@ -46,7 +46,7 @@ productionSchema.pre<Production>("save", function (next) {
 })
 
 // Create and export the model
-const ProductionSchema = model<Production>("Production", productionSchema)
+const ProductionSchema = models.Production || model("Production", productionSchema)
 
 // Ensure indexes are created when the app starts
 ProductionSchema.syncIndexes()

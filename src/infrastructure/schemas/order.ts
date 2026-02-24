@@ -84,7 +84,7 @@ orderSchema.pre<Order>('save', function (next) {
 })
 
 // Create and export the model
-const OrderSchema = model<Order>('Order', orderSchema)
+const OrderSchema = models.Order || model("Order", orderSchema)
 
 // Ensure indexes are created when the app starts
 OrderSchema.syncIndexes()
