@@ -21,7 +21,6 @@ export interface Product extends Document {
 }
 
 const productSchema = new Schema(
-  models.Product || model("Product", productSchema)
   {
     code: {
       type: String,
@@ -84,6 +83,7 @@ productSchema.pre<Product>("save", function (next) {
 
 // Create and export the model
 const ProductSchema = model<Product>("Product", productSchema)
+models.Product || model("Product", productSchema)
 
 // Ensure indexes are created when the app starts
 ProductSchema.syncIndexes()
