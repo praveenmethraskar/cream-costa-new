@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto"
 import { OrderStatus } from "../models/enums/orderstatus"
 import { CreateOrderRequest } from "../request/CreateOrderRequest"
 import OrderSchema, { Order, OrderItem } from "../schemas/order"
@@ -31,7 +32,7 @@ export class AppOrderRepository implements OrderRepository {
   async createOrder(order: CreateOrderRequest): Promise<Order> {
 
     const newOrder = new OrderSchema({
-      orderId: order.orderId,
+      orderId: randomUUID(),
       items: order.items.map(item => ({
         ...item,
         availableStock: 0,
