@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react"
 import type { Order } from "@/infrastructure/schemas/order"
+import { v4 as uuidv4 } from "uuid"
 
 type TabType = "Pending" | "In-progress" | "Dispatched" | "Completed"
 
@@ -116,7 +117,7 @@ export default function ProductionManagement() {
 
   async function handleCreateOrder() {
     // Generate UUID for orderId
-    const orderId = crypto.randomUUID()
+    const orderId = uuidv4()
     
     const orderData = {
       orderId,
